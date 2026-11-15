@@ -51,7 +51,7 @@ function distToSeg(p, a, b){ const k = 111320, cl = Math.cos(p.lat*Math.PI/180);
   const dx = bx-ax, dy = by-ay, L2 = dx*dx + dy*dy; let t = L2 ? -(ax*dx + ay*dy)/L2 : 0; t = Math.max(0, Math.min(1, t));
   return Math.hypot(ax + t*dx, ay + t*dy); }
 function lineLen(line){ let s = 0; for (let i = 1; i < line.length; i++) s += hav({lat:line[i-1][0],lng:line[i-1][1]}, {lat:line[i][0],lng:line[i][1]}); return s; }
-function svgRoute(pts, w = 340, h = 130, color = '#c6ff00'){
+function svgRoute(pts, w = 340, h = 130, color = '#ff6b3d'){
   const P = pts.filter(p => p && p[0] != null); if (P.length < 2) return '';
   const lat0 = P[0][0]*Math.PI/180, xs = P.map(p => p[1]*Math.cos(lat0)), ys = P.map(p => -p[0]);
   const mnx = Math.min(...xs), mxx = Math.max(...xs), mny = Math.min(...ys), mxy = Math.max(...ys), pad = 12;
@@ -191,7 +191,7 @@ function openSegment(s){
     <div id="segMap" class="smap"></div>
     <div class="card"><h3>Leaderboard <span class="demo">DEMO RIVALS</span></h3>${rows.map((r, i) => `<div class="lb ${r.me ? 'me' : ''}"><span>${i === 0 ? '👑' : i + 1}</span><span>${r.av} ${esc(r.name)}</span><b>${fmtTime(r.t)}</b></div>`).join('')}</div>
     <div class="row-btns"><button class="main sec" id="segDel" style="color:#ff8b78">Delete segment</button></div>`);
-  const m = sheetLeaflet('segMap'); const pl = L.polyline(s.pts, { color:'#ff2bd6', weight:6 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
+  const m = sheetLeaflet('segMap'); const pl = L.polyline(s.pts, { color:'#8b7cff', weight:6 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
   $('segDel').onclick = () => { const b = $('segDel'); if (!b.dataset.sure){ b.dataset.sure = 1; b.textContent = 'Tap again to delete'; return; }
     store.set('segments', getSegs().filter(x => x.id !== s.id)); closeModal('sheetModal'); renderRoutes(); };
 }
@@ -204,7 +204,7 @@ function createSegment(r){
     <label class="f">End: <b id="sB"></b></label><input type="range" id="segB" min="0" max="${Math.round(total)}" value="${Math.round(Math.min(total, 800))}" step="10">
     <label class="f">Name</label><input id="segName" placeholder="e.g. Riverside sprint" maxlength="40">
     <div class="row-btns" style="margin-top:12px"><button class="main" id="segSave">Create segment</button></div>`);
-  const m = sheetLeaflet('segMap'); const full = L.polyline(P.map(p => [p[0], p[1]]), { color:'#666', weight:4 }).addTo(m), hl = L.polyline([], { color:'#ff2bd6', weight:7 }).addTo(m);
+  const m = sheetLeaflet('segMap'); const full = L.polyline(P.map(p => [p[0], p[1]]), { color:'#666', weight:4 }).addTo(m), hl = L.polyline([], { color:'#8b7cff', weight:7 }).addTo(m);
   setTimeout(() => m.fitBounds(full.getBounds(), { padding:[20,20] }), 100);
   const sel = () => { let a = +$('segA').value, b = +$('segB').value; if (b < a) [a, b] = [b, a]; return P.filter(p => p[3] >= a && p[3] <= b); };
   const upd = () => { const s = sel(); hl.setLatLngs(s.map(p => [p[0], p[1]])); $('sA').textContent = (+$('segA').value/1000).toFixed(2) + ' km'; $('sB').textContent = (+$('segB').value/1000).toFixed(2) + ' km'; };
@@ -239,9 +239,9 @@ function routeBuilder(preset){
     <label class="f">Name</label><input id="rbName" placeholder="e.g. Lunch loop" maxlength="40">
     <div class="row-btns" style="margin-top:12px"><button class="main" id="rbSave">Save route</button></div>`);
   const m = sheetLeaflet('rbMap'); m.setView(myPos(), 14);
-  const line = L.polyline([], { color:'#00e5ff', weight:5 }).addTo(m), marks = L.layerGroup().addTo(m);
+  const line = L.polyline([], { color:'#6cb6ff', weight:5 }).addTo(m), marks = L.layerGroup().addTo(m);
   const full = () => legs.flat();
-  const redraw = () => { line.setLatLngs(full()); marks.clearLayers(); wps.forEach((w, i) => L.circleMarker(w, { radius:6, color:'#fff', weight:2, fillColor:i ? '#00e5ff' : '#2ecc71', fillOpacity:1 }).addTo(marks)); $('rbDist').textContent = (lineLen(full())/1000).toFixed(2) + ' km'; };
+  const redraw = () => { line.setLatLngs(full()); marks.clearLayers(); wps.forEach((w, i) => L.circleMarker(w, { radius:6, color:'#fff', weight:2, fillColor:i ? '#6cb6ff' : '#2ecc71', fillOpacity:1 }).addTo(marks)); $('rbDist').textContent = (lineLen(full())/1000).toFixed(2) + ' km'; };
   const add = async ll => { wps.push(ll); if (wps.length > 1){ legs.push([ll]); redraw(); legs[legs.length-1] = await snapLeg(wps[wps.length-2], ll, curSport); } redraw(); };
   m.on('click', e => add([e.latlng.lat, e.latlng.lng]));
   $('rbUndo').onclick = () => { wps.pop(); legs.pop(); redraw(); };
@@ -277,7 +277,7 @@ function setFollow(r){
   followRoute = null;
   if (r){ const cum = [0]; for (let i = 1; i < r.line.length; i++) cum.push(cum[i-1] + hav({lat:r.line[i-1][0],lng:r.line[i-1][1]}, {lat:r.line[i][0],lng:r.line[i][1]}));
     followRoute = { ...r, cum, len:cum[cum.length-1] };
-    followLine.layer = L.polyline(r.line, { color:'#00e5ff', weight:5, opacity:.7 }).addTo(map);
+    followLine.layer = L.polyline(r.line, { color:'#6cb6ff', weight:5, opacity:.7 }).addTo(map);
     setTimeout(() => { map.invalidateSize(); map.fitBounds(followLine.layer.getBounds(), { padding:[20,20] }); }, 80); follow = false; }
   renderChips(); render();
 }
@@ -285,7 +285,7 @@ function renderRoutes(){
   const routes = getRoutes(), segs = getSegs();
   $('routesBody').innerHTML = `<div class="row-btns" style="margin-bottom:12px"><button class="main" id="rtNew">＋ New route</button><button class="main sec" id="rtImport">⬆ Import GPX</button></div>
     <h3 class="sec-h">Your routes</h3>
-    ${routes.length ? routes.map((r, i) => `<div class="card rt">${svgRoute(r.line, 340, 110, '#00e5ff')}<div class="rtrow"><div><b>${esc(r.name)}</b><small>${(r.len/1000).toFixed(2)} km</small></div>
+    ${routes.length ? routes.map((r, i) => `<div class="card rt">${svgRoute(r.line, 340, 110, '#6cb6ff')}<div class="rtrow"><div><b>${esc(r.name)}</b><small>${(r.len/1000).toFixed(2)} km</small></div>
       <button class="chip on" data-go="${i}">▶ Follow</button><button class="chip" data-gpx="${i}">⬇</button><button class="chip" data-del="${i}">✕</button></div></div>`).join('')
       : '<div class="empty" style="margin:10px 0 20px">No routes yet. Build one or tap ✨ to auto-generate a loop.</div>'}
     <h3 class="sec-h">Your segments ⭐</h3>
@@ -337,7 +337,7 @@ function renderFitness(){
     <div class="card"><h3>${state_[0]}</h3><p class="sub" style="margin:0">${state_[1]}</p></div>
     <div class="card"><h3>Fitness & fatigue <small>· last 90 days</small></h3><svg viewBox="0 0 ${W} ${H}" width="100%">${bars}<path d="${path('ctl')}" fill="none" stroke="#4da3ff" stroke-width="2.5"/><path d="${path('atl')}" fill="none" stroke="#ff6fa8" stroke-width="1.5" opacity=".8"/></svg>
       <p class="sub" style="margin:6px 0 0"><span style="color:#4da3ff">━ Fitness</span> (42-day load) · <span style="color:#ff6fa8">━ Fatigue</span> (7-day load) · bars = daily effort</p></div>
-    <div class="card"><h3>Relative effort <small>· recent activities</small></h3>${runs.length ? runs.map(r => { const l = runLoad(r); return `<div class="split"><span style="width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${sportIcon(r)} ${esc(r.title || autoTitle(r.start, r.sport))}</span><div class="bar"><i style="width:${Math.min(100, l/1.5)}%;background:${l > 120 ? '#c6ff00' : l > 60 ? '#f5a623' : '#2ecc71'}"></i></div><b style="width:34px;text-align:right">${l}</b></div>`; }).join('') : '<p class="sub">No activities yet.</p>'}</div>
+    <div class="card"><h3>Relative effort <small>· recent activities</small></h3>${runs.length ? runs.map(r => { const l = runLoad(r); return `<div class="split"><span style="width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${sportIcon(r)} ${esc(r.title || autoTitle(r.start, r.sport))}</span><div class="bar"><i style="width:${Math.min(100, l/1.5)}%;background:${l > 120 ? '#ff6b3d' : l > 60 ? '#f5a623' : '#2ecc71'}"></i></div><b style="width:34px;text-align:right">${l}</b></div>`; }).join('') : '<p class="sub">No activities yet.</p>'}</div>
     <p class="sub">Effort uses heart rate when a strap was connected, otherwise pace vs. your threshold pace (${fmtPace(threshPace())}/km).</p>`;
 }
 function insights(r){
@@ -440,7 +440,7 @@ function openDemo(a){
   openSheet(sheetHead(`${a.who.av} ${esc(a.title)}`) + `<p class="sub">${esc(a.who.name)} <span class="demo">DEMO</span> · ${relTime(a.start)}</p><div id="dmMap" class="smap"></div>
     <div class="grid3">${[['Distance', km.toFixed(2) + ' km'], [SPORTS[a.sport].speed ? 'Speed' : 'Pace', fmtRate(a.time/km, a.sport) + ' ' + rateUnit(a.sport)], ['Time', fmtTime(a.time)]].map(([l, v]) => `<div class="stat"><div class="lbl">${l}</div><div class="val" style="font-size:18px">${v}</div></div>`).join('')}</div>
     <div class="row-btns"><button class="main sec" id="dmGhost">👻 Race this as a ghost</button></div>`);
-  const m = sheetLeaflet('dmMap'), pl = L.polyline(a.pts, { color:'#c6ff00', weight:5 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
+  const m = sheetLeaflet('dmMap'), pl = L.polyline(a.pts, { color:'#ff6b3d', weight:5 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
   $('dmGhost').onclick = () => { if (state !== 'idle') return toast('Finish your current activity first');
     let c = 0; const P = a.pts.map((p, i) => { if (i) c += hav({lat:a.pts[i-1][0],lng:a.pts[i-1][1]}, {lat:p[0],lng:p[1]}); return [p[0], p[1], 0, c, null]; });
     P.forEach(p => p[2] = p[3]/c*a.time); closeModal('sheetModal'); showView('runView'); setGhost({ dist:c, pts:P }); toast(`👻 Racing ${a.who.name}'s pace — get to their route and hit START`); };
