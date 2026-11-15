@@ -108,6 +108,57 @@
   .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}
   .leaflet-control-attribution{font-size:9px!important;background:rgba(0,0,0,.5)!important;color:#aaa!important}
   .leaflet-control-attribution a{color:#ccc!important}
+
+  .sub{color:var(--mut);font-size:13px}
+  .note{background:#16202c;color:#9cc7ff;border-radius:12px;padding:9px 12px;font-size:12px;margin-bottom:12px;line-height:1.4}
+  .demo{font-size:9px;font-weight:800;letter-spacing:1px;background:#2a3140;color:#9cc7ff;border-radius:6px;padding:2px 5px;vertical-align:middle}
+  .post{background:var(--card);border-radius:16px;padding:14px;margin-bottom:12px}
+  .ph{display:flex;gap:10px;align-items:center}
+  .ph small,.me-card small,.rtrow small,#youHead small{display:block;color:var(--mut);font-size:12px;margin-top:1px}
+  .av{width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+  .av.big{width:52px;height:52px;font-size:28px}
+  .post h4{margin:10px 0 8px;font-size:17px}
+  .pstats{display:flex;gap:18px;margin-bottom:8px;font-weight:700;font-variant-numeric:tabular-nums}
+  .pstats small{display:block;font-size:10px;color:var(--mut);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+  .mini{display:block;background:#121419;border-radius:12px}
+  .pact{display:flex;gap:8px;margin-top:10px}
+  .pact button{flex:1;background:var(--card2);border:0;border-radius:10px;padding:10px;font-size:14px}
+  .pact .kud.on{background:#3a1f14;color:#ffb39e}
+  .me-card{display:flex;gap:12px;align-items:center}
+  .smap{height:220px;border-radius:14px;overflow:hidden;background:#1b1d22;margin-bottom:12px}
+  .smap.tall{height:46vh}
+  .rbbar{display:flex;gap:6px;align-items:center}
+  .rbbar b{flex:1;font-size:20px}
+  .sec-h{font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px}
+  .sec-h small{text-transform:none;letter-spacing:0}
+  .rtrow{display:flex;gap:10px;align-items:center;margin-top:8px}
+  .rtrow>div:first-child{flex:1}
+  .card.seg .rtrow,.card.club .rtrow,.card.ch .rtrow{margin-top:0}
+  .lb{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line);font-size:14px}
+  .lb span:first-child{width:26px;text-align:center;color:var(--mut)}
+  .lb span:nth-child(2){flex:1}
+  .lb.me{background:#2a1712;border-radius:8px}
+  .ins{padding:6px 0;font-size:14px;border-bottom:1px solid var(--line)}
+  .ins:last-child{border:0}
+  .cmt{padding:6px 0;font-size:14px}
+  .chi{font-size:26px;width:40px;text-align:center}
+  .prog{height:8px;background:var(--card2);border-radius:4px;overflow:hidden;margin:10px 0 4px}
+  .prog i{display:block;height:100%;background:var(--acc);border-radius:4px;transition:width .3s}
+  .done{font-size:22px}
+  #youHead{display:flex;gap:12px;align-items:center;padding:4px 12px 10px}
+  #youTabs{display:flex;gap:6px;padding:0 12px 10px;overflow-x:auto;scrollbar-width:none}
+  #youTabs::-webkit-scrollbar{display:none}
+  #youTabs button{flex:none;background:var(--card);border:1px solid var(--line);color:var(--mut);border-radius:20px;padding:7px 13px;font-size:13px}
+  #youTabs button.on{color:var(--txt);border-color:var(--acc)}
+  .panel{padding:0 12px 20px}
+  .player{text-align:center;padding:10px 0 16px}
+  .pln{font-size:24px;font-weight:800}
+  .plt{font-size:96px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--acc)}
+  .avs{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+  .avs button{font-size:24px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 0}
+  .avs button.on{border-color:var(--acc);background:#2a1712}
+  input[type=range]{padding:0;accent-color:#a970ff}
+  nav button b{font-size:18px}
 </style>
 </head>
 <body>
@@ -138,27 +189,41 @@
   </div>
 </main>
 
-<!-- ================= HISTORY ================= -->
-<section class="view" id="historyView"><div class="pad" id="historyList"></div></section>
+<!-- ================= FEED ================= -->
+<section class="view" id="feedView"><div class="pad" id="feedBody"></div></section>
 
-<!-- ================= STATS ================= -->
-<section class="view" id="statsView"><div class="pad">
-  <div class="grid2" id="totals"></div>
-  <div class="card"><h3>Weekly distance <small>· last 8 weeks</small></h3><div id="weekChart"></div></div>
-  <div class="card"><h3>Personal records 🏆</h3><div class="prs" id="prs"></div></div>
-  <div class="card"><h3>Race predictor 🔮 <small>· from your last 90 days</small></h3><div class="pred" id="pred"></div></div>
-  <div class="card"><h3>Achievements <small id="achCount"></small></h3><div class="badges" id="badges"></div></div>
-  <div class="card"><h3>Your running heatmap 🔥</h3><div id="heat"></div></div>
-</div></section>
+<!-- ================= ROUTES ================= -->
+<section class="view" id="routesView"><div class="pad" id="routesBody"></div></section>
 
-<!-- ================= PLAN ================= -->
-<section class="view" id="planView"><div class="pad" id="planBody"></div></section>
+<!-- ================= CLUBS ================= -->
+<section class="view" id="clubsView"><div class="pad" id="clubsBody"></div></section>
+
+<!-- ================= YOU ================= -->
+<section class="view" id="youView">
+  <div id="youHead"></div>
+  <div id="youTabs">
+    <button data-p="panelHistory" class="on">Activities</button><button data-p="panelStats">Stats</button><button data-p="panelFitness">Fitness</button><button data-p="panelPlan">Plan</button><button data-p="panelStrength">Strength</button>
+  </div>
+  <div class="panel" id="panelHistory"><div id="historyList"></div></div>
+  <div class="panel" id="panelStats" style="display:none">
+    <div class="grid2" id="totals"></div>
+    <div class="card"><h3>Weekly distance <small>· last 8 weeks</small></h3><div id="weekChart"></div></div>
+    <div class="card"><h3>Personal records 🏆</h3><div class="prs" id="prs"></div></div>
+    <div class="card"><h3>Race predictor 🔮 <small>· from your last 90 days</small></h3><div class="pred" id="pred"></div></div>
+    <div class="card"><h3>Achievements <small id="achCount"></small></h3><div class="badges" id="badges"></div></div>
+    <div class="card"><h3>Your heatmap 🔥</h3><div id="heat"></div></div>
+  </div>
+  <div class="panel" id="panelFitness" style="display:none"></div>
+  <div class="panel" id="panelPlan" style="display:none"><div id="planBody"></div></div>
+  <div class="panel" id="panelStrength" style="display:none"></div>
+</section>
 
 <nav>
-  <button class="on" data-v="runView"><b>🏃</b>Run</button>
-  <button data-v="historyView"><b>📋</b>History</button>
-  <button data-v="statsView"><b>📊</b>Stats</button>
-  <button data-v="planView"><b>🗓️</b>Plan</button>
+  <button data-v="feedView"><b>🏠</b>Feed</button>
+  <button data-v="routesView"><b>🗺️</b>Routes</button>
+  <button class="on" data-v="runView"><b>⏺️</b>Record</button>
+  <button data-v="clubsView"><b>👥</b>Clubs</button>
+  <button data-v="youView"><b>👤</b>You</button>
 </nav>
 
 <!-- ================= MODALS ================= -->
@@ -178,11 +243,13 @@
   <div id="dMap"></div>
   <div class="grid3" id="dStats" style="margin-top:12px"></div>
   <div id="dElev"></div>
+  <div id="dExtra"></div>
   <div class="card" id="dSplitsCard"><h3>Splits</h3><div id="dSplits"></div></div>
   <div class="row-btns">
     <button class="main" id="dShare">📸 Share card</button>
     <button class="main sec" id="dGhost">👻 Race ghost</button>
   </div>
+  <div class="row-btns" id="dMore"></div>
   <div class="row-btns"><button class="main sec" id="dDelete" style="color:#ff8b78">Delete run</button></div>
 </div></div>
 
@@ -200,6 +267,10 @@
   <input id="sTarget" type="text" inputmode="numeric" placeholder="e.g. 5:30">
   <div class="tog"><span>🔊 Voice announcements</span><input type="checkbox" id="sVoice"></div>
   <div class="tog"><span>🎯 Pace coach (speed up / ease off)</span><input type="checkbox" id="sCoach"></div>
+  <label class="f">Age — for heart-rate zones</label><input id="sAge" type="number" inputmode="numeric" min="10" max="99">
+  <label class="f">Max heart rate (optional, overrides the age estimate)</label><input id="sMaxHr" type="number" inputmode="numeric" placeholder="auto">
+  <div class="row-btns" style="margin-top:12px"><button class="main sec" id="sHr">❤️ Connect heart-rate strap</button></div><p class="sub" id="sHrNote"></p>
+  <div class="row-btns"><button class="main sec" id="sExport">⬇ Back up data</button><button class="main sec" id="sImport">⬆ Restore</button></div>
   <div class="row-btns" style="margin-top:16px"><button class="main" id="sSave">Save</button></div>
 </div></div>
 
@@ -210,8 +281,10 @@
   <a id="cardDl" download="pace-run.png" style="color:var(--acc);font-size:14px">Download image</a>
 </div></div>
 
+<div class="modal" id="sheetModal"><div class="sheet" id="sheetBody"></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="extra.js"></script>
 <script>
 // ======================================================================
 // helpers
@@ -247,7 +320,6 @@ function interp(P, key, val, out){
   const a = P[lo], b = P[hi], f = (val - a[key]) / ((b[key] - a[key]) || 1);
   return a[out] + (b[out] - a[out]) * f;
 }
-const kcalFor = m => Math.round(settings.weight * (m/1000) * 1.036);   // standard running estimate
 
 // ======================================================================
 // data
@@ -258,7 +330,8 @@ function normRun(r){
   if (!r.pts && r.route) r.pts = r.route.map(p => [p[0], p[1], null, null, null]);
   r.pts = r.pts || []; r.splits = r.splits || []; r.best = r.best || {};
   r.id = r.id || r.date; r.start = r.start || (r.date - r.time*1000);
-  if (r.kcal == null) r.kcal = kcalFor(r.dist);
+  if (r.kcal == null) r.kcal = kcalFor(r.dist, r.time, r.sport);
+  r.title = r.title || autoTitle(r.start, r.sport);
   r.elev = r.elev || 0; return r;
 }
 const getRuns = () => store.get('runs', []).map(normRun);
@@ -310,7 +383,7 @@ function startGps(){
   }, { enableHighAccuracy:true, maximumAge:0, timeout:20000 });
 }
 function onFix(p){
-  const c = p.coords, pt = { lat:c.latitude, lng:c.longitude, t:p.timestamp || Date.now(), acc:c.accuracy, alt:c.altitude };
+  const c = p.coords, pt = { lat:c.latitude, lng:c.longitude, t:p.timestamp || Date.now(), acc:c.accuracy, alt:c.altitude, hr: liveHr() };
   setGps(c.accuracy); if (!recoverPending) banner('');
   me.setLatLng([pt.lat, pt.lng]); if (!map.hasLayer(me)) { me.addTo(map); if (!ghost) map.setView([pt.lat, pt.lng], 16); }
   if (follow) map.panTo([pt.lat, pt.lng], { animate:true });
@@ -320,9 +393,9 @@ function onFix(p){
   if (!prev || prev.newSeg){ pt.seg = true; pt.e = elapsed(); pt.c = dist; pts.push(pt); route.addLatLng([pt.lat, pt.lng]); trackAlt(pt.alt); return; }
   const d = hav(prev, pt), dt = (pt.t - prev.t)/1000;
   if (d < Math.max(3, c.accuracy/3)) return;                    // jitter
-  if (dt > 0 && d/dt > 12) return;                              // >43 km/h = glitch
+  if (dt > 0 && d/dt > sportDef().max) return;                              // >43 km/h = glitch
   dist += d; pt.e = elapsed(); pt.c = dist; pts.push(pt); route.addLatLng([pt.lat, pt.lng]); trackAlt(pt.alt);
-  checkSplits(); checkPRs(); runWorkout(); checkGhost(); coach();
+  checkSplits(); checkPRs(); runWorkout(); checkGhost(); coach(); extraOnPoint(pt);
 }
 function trackAlt(a){
   if (a == null || !isFinite(a)) return;
@@ -353,6 +426,7 @@ function checkSplits(){
   }
 }
 function checkPRs(){
+  if (curSport !== 'run') return;
   const P = pts, i = P.length-1;
   for (const [k, D] of PRD){
     if (P[i].c < D) continue;
@@ -483,12 +557,13 @@ function renderChips(){
   const c = $('chips'), plan = store.get('plan', null), today = plan && todayWorkout(plan);
   if (mode.type === 'plan' && (!today || today.kind === 'rest')) mode = { type:'free' };
   const lock = state !== 'idle';
-  let h = `<button class="chip ${mode.type==='free'?'on':''}" data-m="free">🏃 Free run</button>`;
+  let h = extraChipsHtml() + `<button class="chip ${mode.type==='free'?'on':''}" data-m="free">🎯 Free</button>`;
   h += `<button class="chip ${mode.type==='interval'?'on':''}" data-m="interval">⏱️ ${mode.type==='interval' ? esc(mode.label) : 'Intervals'}</button>`;
   if (today && today.kind !== 'rest') h += `<button class="chip ${mode.type==='plan'?'on':''}" data-m="plan">🗓️ Today: ${esc(today.title)}</button>`;
   if (ghost) h += `<button class="chip on" data-m="ghostoff">👻 Ghost ${(ghost.run.dist/1000).toFixed(2)} km ✕</button>`;
   c.innerHTML = h; c.style.opacity = lock ? .5 : 1;
-  c.querySelectorAll('.chip').forEach(b => b.onclick = () => {
+  bindExtraChips(c);
+  c.querySelectorAll('.chip[data-m]').forEach(b => b.onclick = () => {
     if (state !== 'idle') return toast('Finish your run to change mode');
     const m = b.dataset.m;
     if (m === 'free') mode = { type:'free' };
@@ -517,6 +592,7 @@ function stripInfo(){
   const t = (w && w.target) || settings.target; if (t) parts.push(`Target ${fmtPace(t)}/km`);
   if (ghost){ const g = ghostDiff();
     parts.push(ghostDone ? (ghostWin ? '👻 Ghost beaten! 🏆' : '👻 Ghost won this time') : g == null ? `👻 Racing your ${(ghost.run.dist/1000).toFixed(2)} km run` : `👻 ${g >= 0 ? '+' : '−'}${fmtTime(Math.abs(g))} ${g >= 0 ? 'ahead' : 'behind'}`); }
+  parts.push(...extraStrip());
   return { text: parts.join(' · '), cls };
 }
 function render(){
@@ -525,12 +601,13 @@ function render(){
   $('time').textContent = fmtTime(t);
   $('avg').textContent = dist > 50 ? fmtPace(t/(dist/1000)) : '--:--';
   $('cur').textContent = state === 'running' ? fmtPace(currentPace()) : '--:--';
-  $('kcal').textContent = kcalFor(dist);
+  $('kcal').textContent = kcalFor(dist, t, curSport);
   $('elev').textContent = Math.round(elev);
   $('lastKm').textContent = splits.length ? fmtTime(splits[splits.length-1]) : '--:--';
   const s = stripInfo(), el = $('strip');
   el.textContent = s.text; el.className = 'strip' + (s.text ? ' on' : '') + (s.cls ? ' ' + s.cls : '');
   if (state === 'running') updateGhostMarker();
+  extraRender();
 }
 function setButtons(){
   const b = $('btnStart');
@@ -547,12 +624,12 @@ $('btnStart').onclick = () => {
     elev = 0; altS = null; altBase = null; liveBest = {}; liveJ = {}; prAnnounced = {}; lastCoach = 0;
     ghostDone = false; ghostWin = false; ghostFinishE = 0;
     prStored = Object.fromEntries(Object.entries(allPRs(getRuns())).map(([k,v]) => [k, v.t]));
-    workout = buildWorkout(mode);
+    workout = buildWorkout(mode); extraStart();
     route.setLatLngs([]); follow = true; runStart = Date.now();
     state = 'running'; segStart = Date.now(); startGps(); lockScreen();
     if (workout && workout.type === 'interval') say(`${workout.label}. Rep 1 of ${workout.reps}. Go!`);
     else if (workout && workout.goal) say(`Workout: ${workout.label}. Let's go!`);
-    else say(ghost ? 'Ghost race started. Catch your ghost!' : 'Run started');
+    else say(ghost ? 'Ghost race started. Catch your ghost!' : `${sportDef().name} started`);
     clearInterval(tick); tick = setInterval(render, 500);
   } else if (state === 'running'){
     elapsedBefore = elapsed(); state = 'paused'; if (pts.length) pts[pts.length-1].newSeg = true; say('Paused'); saveActive();
@@ -579,18 +656,19 @@ let pending = null;
 function compactPts(){
   const step = Math.max(1, Math.ceil(pts.length / 1500));
   return pts.filter((p, i) => i % step === 0 || i === pts.length-1 || p.seg)
-            .map(p => [+p.lat.toFixed(5), +p.lng.toFixed(5), +p.e.toFixed(1), Math.round(p.c), p.alt == null || !isFinite(p.alt) ? null : Math.round(p.alt)]);
+            .map(p => [+p.lat.toFixed(5), +p.lng.toFixed(5), +p.e.toFixed(1), Math.round(p.c), p.alt == null || !isFinite(p.alt) ? null : Math.round(p.alt), p.hr || null]);
 }
 function finish(){
   elapsedBefore = elapsed(); state = 'idle'; clearInterval(tick); buzz([100,50,100,50,300]);
   try{ wakeLock && wakeLock.release(); }catch{} wakeLock = null;
   store.del('active'); ghostMarker.remove();
   const t = elapsedBefore, km = dist/1000;
-  pending = { id: Date.now(), date: Date.now(), start: runStart, dist, time: t, kcal: kcalFor(dist), elev: Math.round(elev),
+  pending = { id: Date.now(), date: Date.now(), start: runStart, dist, time: t, kcal: 0, elev: Math.round(elev),
     splits: [...splits], best: Object.fromEntries(Object.entries(liveBest).map(([k,v]) => [k, Math.round(v)])), pts: compactPts(),
     type: workout ? workout.type : 'free', label: workout ? workout.label : null,
     completed: workout ? (workout.type === 'interval' ? !!workout.done : !!workout.goalHit) : true,
     ghostWin: ghost ? ghostWin : false };
+  extraFinish(pending);
   $('sumStats').innerHTML = statTiles(pending);
   const runs = getRuns(), before = unlockedSet(runs), after = unlockedSet([normRun({ ...pending }), ...runs]);
   const newBadges = ACH.filter(a => after.has(a.id) && !before.has(a.id));
@@ -599,17 +677,18 @@ function finish(){
   if (newPRs.length) x += `<div class="card"><h3>🏆 Personal records</h3><div class="prs">${newPRs.map(([k,v]) => `<div><span>${k}</span><b>${fmtTime(v)}</b></div>`).join('')}</div></div>`;
   if (ghost) x += `<div class="card"><h3>👻 Ghost race</h3>${ghostDone ? (ghostWin ? `You won by <b>${fmtTime(ghost.P[ghost.P.length-1].e - ghostFinishE)}</b>! 🎉` : 'Your ghost won this time. Rematch?') : 'You stopped before the ghost’s finish line.'}</div>`;
   if (newBadges.length) x += `<div class="card"><h3>New badges — save to unlock</h3><div class="badges">${newBadges.map(a => `<div class="badge on"><b>${a.icon}</b>${a.name}</div>`).join('')}</div></div>`;
+  x += extraSummaryHtml(pending);
   $('sumExtra').innerHTML = x;
   workout = null; mode = { type:'free' };          // next run starts as a free run
   setButtons(); renderChips(); render();
   openModal('summary');
-  say(`Run complete. ${km.toFixed(2)} kilometers in ${spoken(t)}.` + (newPRs.length ? ` You set ${newPRs.length} personal record${newPRs.length>1?'s':''}!` : ''));
+  say(`${SPORTS[pending.sport].name} complete. ${km.toFixed(2)} kilometers in ${spoken(t)}.` + (newPRs.length ? ` You set ${newPRs.length} personal record${newPRs.length>1?'s':''}!` : ''));
 }
 function statTiles(r){
   const km = r.dist/1000, bestKm = r.splits.length ? Math.min(...r.splits) : null;
   const tile = (l, v, u='') => `<div class="stat"><div class="lbl">${l}</div><div class="val">${v}${u ? `<span class="unit">${u}</span>` : ''}</div></div>`;
-  return tile('Distance', km.toFixed(2), 'km') + tile('Time', fmtTime(r.time)) + tile('Avg pace', km > 0.05 ? fmtPace(r.time/km) : '--:--')
-       + tile('Calories', r.kcal, 'kcal') + tile('Climb', r.elev, 'm') + tile('Best km', bestKm ? fmtTime(bestKm) : '--:--');
+  return tile('Distance', km.toFixed(2), 'km') + tile('Time', fmtTime(r.time)) + tile(SPORTS[r.sport||'run'].speed ? 'Avg speed' : 'Avg pace', km > 0.05 ? fmtRate(r.time/km, r.sport||'run') : '--:--', SPORTS[r.sport||'run'].speed ? 'km/h' : '')
+       + tile('Calories', r.kcal, 'kcal') + tile('Climb', r.elev, 'm') + (r.hr ? tile('Avg HR', r.hr.avg, 'bpm') : tile('Best km', bestKm ? fmtTime(bestKm) : '--:--'));
 }
 $('btnSave').onclick = () => {
   const runs = store.get('runs', []); const before = unlockedSet(runs.map(normRun));
@@ -619,7 +698,7 @@ $('btnSave').onclick = () => {
   const nb = ACH.filter(a => after.has(a.id) && !before.has(a.id));
   if (nb.length){ toast(`${nb[0].icon} Badge unlocked: ${nb[0].name}${nb.length > 1 ? ` +${nb.length-1} more` : ''}`); say(`Badge unlocked: ${nb.map(a => a.name).join(', ')}`); }
   else toast('Run saved ✅');
-  closeModal('summary'); if (ghost) setGhost(null); renderChips();
+  closeModal('summary'); if (ghost) setGhost(null); renderChips(); extraAfterSave(pending);
 };
 $('btnDiscard').onclick = () => {
   const b = $('btnDiscard');
@@ -635,15 +714,15 @@ function renderHistory(){
   if (!runs.length){ h.innerHTML = '<div class="empty">No runs yet.<br>Go get one in 🏃</div>'; return; }
   h.innerHTML = runs.map((r, i) => { const d = new Date(r.start), km = r.dist/1000;
     const tag = r.type === 'interval' ? '⏱️ ' : r.type === 'goal' ? '🗓️ ' : r.ghostWin ? '👻 ' : '';
-    return `<div class="run" data-i="${i}"><div class="top"><span>${tag}${d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})} · ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><span>${r.label ? esc(r.label) : ''} ›</span></div>
-    <div class="row"><div>${km.toFixed(2)}<small>km</small></div><div>${fmtTime(r.time)}<small>time</small></div><div>${km>0.05?fmtPace(r.time/km):'--:--'}<small>/km</small></div><div>${r.kcal}<small>kcal</small></div></div></div>`; }).join('');
+    return `<div class="run" data-i="${i}"><div class="top"><span>${sportIcon(r)} ${tag}<b style="color:var(--txt)">${esc(r.title)}</b> · ${d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})} · ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><span>${r.label ? esc(r.label) : ''} ›</span></div>
+    <div class="row"><div>${km.toFixed(2)}<small>km</small></div><div>${fmtTime(r.time)}<small>time</small></div><div>${km>0.05?fmtRate(r.time/km, r.sport):'--:--'}<small>${rateUnit(r.sport)}</small></div><div>${r.kcal}<small>kcal</small></div></div></div>`; }).join('');
   h.querySelectorAll('.run').forEach(el => el.onclick = () => openDetail(runs[+el.dataset.i]));
 }
 let dMap = null, dLayer = null, detailRun = null;
 function openDetail(r){
   detailRun = r;
   const d = new Date(r.start);
-  $('dTitle').textContent = r.label || `${(r.dist/1000).toFixed(2)} km run`;
+  $('dTitle').textContent = r.title || r.label || `${(r.dist/1000).toFixed(2)} km run`;
   $('dSub').textContent = d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long', year:'numeric' }) + ' · ' + d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
   $('dStats').innerHTML = statTiles(r);
   if (r.splits.length){
@@ -658,6 +737,7 @@ function openDetail(r){
     $('dElev').innerHTML = `<div class="card"><h3>Elevation <small>· ${Math.round(minA)}–${Math.round(maxA)} m</small></h3><svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none"><path d="${path} L${W},${H} L0,${H} Z" fill="rgba(255,77,46,.18)"/><path d="${path}" fill="none" stroke="#ff4d2e" stroke-width="2"/></svg></div>`;
   } else $('dElev').innerHTML = '';
   const del = $('dDelete'); del.textContent = 'Delete run'; delete del.dataset.sure;
+  extraDetail(r);
   openModal('detail');
   setTimeout(() => {
     if (!dMap){ dMap = L.map('dMap', { zoomControl:false, attributionControl:false }); tiles(dMap); }
@@ -730,7 +810,7 @@ function streaks(runs){
 function predictor(runs){
   const cutoff = Date.now() - 90*DAY; let best = null;
   for (const r of runs){
-    if (r.start < cutoff || r.dist < 3000) continue;
+    if (r.start < cutoff || r.dist < 3000 || (r.sport || 'run') !== 'run') continue;
     const cands = [[r.time, r.dist]]; for (const [k, D] of PRD) if (r.best[k] && D >= 3000) cands.push([r.best[k], D]);
     for (const [T, D] of cands){ const m = T * Math.pow(42195/D, 1.06); if (!best || m < best.m) best = { m, T, D }; }
   }
@@ -885,9 +965,10 @@ function showView(id){
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.v === id));
   if (id === 'runView') setTimeout(() => map.invalidateSize(), 50);
-  if (id === 'historyView') renderHistory();
-  if (id === 'statsView') renderStats();
-  if (id === 'planView') renderPlan();
+  if (id === 'feedView') renderFeed();
+  if (id === 'routesView') renderRoutes();
+  if (id === 'clubsView') renderClubs();
+  if (id === 'youView') renderYou();
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.v));
 function openModal(id){ $(id).classList.add('on'); }
@@ -897,12 +978,12 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
 
 $('btnSettings').onclick = () => {
   $('sWeight').value = settings.weight; $('sTarget').value = settings.target ? fmtTime(settings.target) : '';
-  $('sVoice').checked = settings.voice; $('sCoach').checked = settings.coach; openModal('settingsModal');
+  $('sVoice').checked = settings.voice; $('sCoach').checked = settings.coach; $('sAge').value = settings.age || ''; $('sMaxHr').value = settings.maxHr || ''; openModal('settingsModal');
 };
 $('sSave').onclick = () => {
   const w = parseFloat($('sWeight').value); if (!(w >= 30 && w <= 250)) return toast('Enter a weight between 30 and 250 kg');
   const tv = $('sTarget').value.trim(), t = tv ? parsePace(tv) : null; if (tv && !t) return toast('Write pace like 5:30');
-  Object.assign(settings, { weight: w, target: t, voice: $('sVoice').checked, coach: $('sCoach').checked });
+  Object.assign(settings, { weight: w, target: t, voice: $('sVoice').checked, coach: $('sCoach').checked, age: parseInt($('sAge').value) || null, maxHr: parseInt($('sMaxHr').value) || null });
   store.set('settings', settings); closeModal('settingsModal'); render(); toast('Settings saved');
 };
 
@@ -913,6 +994,7 @@ window.addEventListener('beforeunload', e => { if (state !== 'idle'){ saveActive
 // ======================================================================
 startGps();
 checkRecover();
+extraBoot();
 renderChips(); render();
 if (!store.get('settings', null)) setTimeout(() => toast('👋 Set your weight in ⚙️ for accurate calories'), 1200);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
