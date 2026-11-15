@@ -1,4 +1,4 @@
-const CACHE = 'pace-v5';
+const CACHE = 'pace-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './extra.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
