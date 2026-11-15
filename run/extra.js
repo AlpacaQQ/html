@@ -608,6 +608,7 @@ function importBackup(){ pickFile('.json,application/json', txt => { try{ const 
 
 // ---------------- boot ----------------
 function extraBoot(){
+  document.body.dataset.state = 'idle';
   curSport = store.get('sport', 'run'); if (!SPORTS[curSport] || curSport === 'strength') curSport = 'run';
   setSport(curSport);
   document.querySelectorAll('#youTabs button').forEach(b => b.onclick = () => showPanel(b.dataset.p));
