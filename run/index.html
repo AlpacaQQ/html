@@ -58,6 +58,7 @@
   .sheet{background:var(--card);border-radius:20px;padding:20px;width:100%;max-width:420px}
   .sheet h2{margin:0 0 12px}
   .sheet .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}
   .leaflet-control-attribution{font-size:9px!important;background:rgba(0,0,0,.5)!important;color:#aaa!important}
   .leaflet-control-attribution a{color:#ccc!important}
 </style>
@@ -78,9 +79,9 @@
   <div class="stats">
     <div class="stat big"><div class="lbl">Distance</div><div class="val"><span id="dist">0.00</span><span class="unit">km</span></div></div>
     <div class="stat"><div class="lbl">Time</div><div class="val" id="time">0:00</div></div>
-    <div class="stat"><div class="lbl">Avg pace</div><div class="val"><span id="avg">–:––</span><span class="unit">/km</span></div></div>
-    <div class="stat"><div class="lbl">Current pace</div><div class="val"><span id="cur">–:––</span><span class="unit">/km</span></div></div>
-    <div class="stat"><div class="lbl">Last km</div><div class="val"><span id="lastKm">–:––</span></div></div>
+    <div class="stat"><div class="lbl">Avg pace</div><div class="val"><span id="avg">--:--</span><span class="unit">/km</span></div></div>
+    <div class="stat"><div class="lbl">Current pace</div><div class="val"><span id="cur">--:--</span><span class="unit">/km</span></div></div>
+    <div class="stat"><div class="lbl">Last km</div><div class="val"><span id="lastKm">--:--</span></div></div>
   </div>
   <div class="splits" id="splits"></div>
   <div class="controls">
@@ -112,7 +113,7 @@
 const $ = id => document.getElementById(id);
 const fmtTime = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
   return h ? `${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}` : `${m}:${String(x).padStart(2,'0')}`; };
-const fmtPace = secPerKm => (!isFinite(secPerKm) || secPerKm <= 0 || secPerKm > 3600) ? '–:––' : fmtTime(secPerKm);
+const fmtPace = secPerKm => (!isFinite(secPerKm) || secPerKm <= 0 || secPerKm > 3600) ? '--:--' : fmtTime(secPerKm);
 function hav(a, b){ const R=6371000, r=Math.PI/180, dLa=(b.lat-a.lat)*r, dLo=(b.lng-a.lng)*r;
   const h=Math.sin(dLa/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
 const store = { get(k,d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d; }catch{ return d; } },
@@ -122,8 +123,8 @@ function buzz(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch{} }
 
 // ---------- map ----------
 const map = L.map('map', { zoomControl:false, attributionControl:true }).setView([59.91, 10.75], 14);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19, attribution: '© OpenStreetMap © CARTO' }).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 const route = L.polyline([], { color:'#ff4d2e', weight:5, opacity:.95 }).addTo(map);
 const me = L.circleMarker([0,0], { radius:8, color:'#fff', weight:3, fillColor:'#ff4d2e', fillOpacity:1 });
 let follow = true; map.on('dragstart', () => follow = false);
@@ -198,9 +199,9 @@ function render(){
   const t = elapsed();
   $('dist').textContent = (dist/1000).toFixed(2);
   $('time').textContent = fmtTime(t);
-  $('avg').textContent = dist > 50 ? fmtPace(t/(dist/1000)) : '–:––';
-  $('cur').textContent = state === 'running' ? fmtPace(currentPace()) : '–:––';
-  $('lastKm').textContent = splits.length ? fmtTime(splits[splits.length-1]) : '–:––';
+  $('avg').textContent = dist > 50 ? fmtPace(t/(dist/1000)) : '--:--';
+  $('cur').textContent = state === 'running' ? fmtPace(currentPace()) : '--:--';
+  $('lastKm').textContent = splits.length ? fmtTime(splits[splits.length-1]) : '--:--';
 }
 function renderSplits(){
   const best = Math.min(...splits);
@@ -247,8 +248,8 @@ function finish(){
   pending = { date: Date.now(), dist, time: t, splits: [...splits],
               route: pts.filter((_, i) => i % 3 === 0 || i === pts.length-1).map(p => [+p.lat.toFixed(5), +p.lng.toFixed(5)]) };
   $('sDist').textContent = km.toFixed(2); $('sTime').textContent = fmtTime(t);
-  $('sAvg').textContent = km > 0.05 ? fmtPace(t/km) : '–:––';
-  $('sBest').textContent = splits.length ? fmtTime(Math.min(...splits)) : '–:––';
+  $('sAvg').textContent = km > 0.05 ? fmtPace(t/km) : '--:--';
+  $('sBest').textContent = splits.length ? fmtTime(Math.min(...splits)) : '--:--';
   $('summary').style.display = 'flex';
   say(`Run complete. ${km.toFixed(2)} kilometers in ${spoken(t)}.`);
 }
@@ -265,7 +266,7 @@ function renderHistory(){
     runs.map((r,i) => { const d = new Date(r.date), km = r.dist/1000;
       return `<div class="run"><div class="top"><span>${d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})} · ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
       <button class="del" data-i="${i}">Delete</button></div>
-      <div class="row"><div>${km.toFixed(2)}<small>km</small></div><div>${fmtTime(r.time)}<small>time</small></div><div>${km>0.05?fmtPace(r.time/km):'–:––'}<small>/km</small></div></div></div>`; }).join('');
+      <div class="row"><div>${km.toFixed(2)}<small>km</small></div><div>${fmtTime(r.time)}<small>time</small></div><div>${km>0.05?fmtPace(r.time/km):'--:--'}<small>/km</small></div></div></div>`; }).join('');
   h.querySelectorAll('.del').forEach(b => b.onclick = () => { const rs = store.get('runs', []); rs.splice(+b.dataset.i, 1); store.set('runs', rs); renderHistory(); });
 }
 $('tabRun').onclick = () => { $('tabRun').classList.add('on'); $('tabHist').classList.remove('on'); $('runView').style.display = 'flex'; $('history').style.display = 'none'; setTimeout(() => map.invalidateSize(), 50); };
