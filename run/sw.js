@@ -1,7 +1,7 @@
-const CACHE = 'pace-v9';
-const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './extra.js'];
+const CACHE = 'pace-v10';
+const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './extra.js?v=10'];
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache:'reload' })))));
   self.skipWaiting();
 });
 self.addEventListener('activate', e => {
