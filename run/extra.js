@@ -51,7 +51,7 @@ function distToSeg(p, a, b){ const k = 111320, cl = Math.cos(p.lat*Math.PI/180);
   const dx = bx-ax, dy = by-ay, L2 = dx*dx + dy*dy; let t = L2 ? -(ax*dx + ay*dy)/L2 : 0; t = Math.max(0, Math.min(1, t));
   return Math.hypot(ax + t*dx, ay + t*dy); }
 function lineLen(line){ let s = 0; for (let i = 1; i < line.length; i++) s += hav({lat:line[i-1][0],lng:line[i-1][1]}, {lat:line[i][0],lng:line[i][1]}); return s; }
-function svgRoute(pts, w = 340, h = 130, color = '#2f6bff'){
+function svgRoute(pts, w = 340, h = 130, color = '#ff4b3e'){
   const P = pts.filter(p => p && p[0] != null); if (P.length < 2) return '';
   const lat0 = P[0][0]*Math.PI/180, xs = P.map(p => p[1]*Math.cos(lat0)), ys = P.map(p => -p[0]);
   const mnx = Math.min(...xs), mxx = Math.max(...xs), mny = Math.min(...ys), mxy = Math.max(...ys), pad = 12;
@@ -337,7 +337,7 @@ function renderFitness(){
     <div class="card"><h3>${state_[0]}</h3><p class="sub" style="margin:0">${state_[1]}</p></div>
     <div class="card"><h3>Fitness & fatigue <small>· last 90 days</small></h3><svg viewBox="0 0 ${W} ${H}" width="100%">${bars}<path d="${path('ctl')}" fill="none" stroke="#4da3ff" stroke-width="2.5"/><path d="${path('atl')}" fill="none" stroke="#ff6fa8" stroke-width="1.5" opacity=".8"/></svg>
       <p class="sub" style="margin:6px 0 0"><span style="color:#4da3ff">━ Fitness</span> (42-day load) · <span style="color:#ff6fa8">━ Fatigue</span> (7-day load) · bars = daily effort</p></div>
-    <div class="card"><h3>Relative effort <small>· recent activities</small></h3>${runs.length ? runs.map(r => { const l = runLoad(r); return `<div class="split"><span style="width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${sportIcon(r)} ${esc(r.title || autoTitle(r.start, r.sport))}</span><div class="bar"><i style="width:${Math.min(100, l/1.5)}%;background:${l > 120 ? '#2f6bff' : l > 60 ? '#f5a623' : '#2ecc71'}"></i></div><b style="width:34px;text-align:right">${l}</b></div>`; }).join('') : '<p class="sub">No activities yet.</p>'}</div>
+    <div class="card"><h3>Relative effort <small>· recent activities</small></h3>${runs.length ? runs.map(r => { const l = runLoad(r); return `<div class="split"><span style="width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${sportIcon(r)} ${esc(r.title || autoTitle(r.start, r.sport))}</span><div class="bar"><i style="width:${Math.min(100, l/1.5)}%;background:${l > 120 ? '#ff4b3e' : l > 60 ? '#f5a623' : '#2ecc71'}"></i></div><b style="width:34px;text-align:right">${l}</b></div>`; }).join('') : '<p class="sub">No activities yet.</p>'}</div>
     <p class="sub">Effort uses heart rate when a strap was connected, otherwise pace vs. your threshold pace (${fmtPace(threshPace())}/km).</p>`;
 }
 function insights(r){
@@ -440,7 +440,7 @@ function openDemo(a){
   openSheet(sheetHead(`${a.who.av} ${esc(a.title)}`) + `<p class="sub">${esc(a.who.name)} <span class="demo">DEMO</span> · ${relTime(a.start)}</p><div id="dmMap" class="smap"></div>
     <div class="grid3">${[['Distance', km.toFixed(2) + ' km'], [SPORTS[a.sport].speed ? 'Speed' : 'Pace', fmtRate(a.time/km, a.sport) + ' ' + rateUnit(a.sport)], ['Time', fmtTime(a.time)]].map(([l, v]) => `<div class="stat"><div class="lbl">${l}</div><div class="val" style="font-size:18px">${v}</div></div>`).join('')}</div>
     <div class="row-btns"><button class="main sec" id="dmGhost">👻 Race this as a ghost</button></div>`);
-  const m = sheetLeaflet('dmMap'), pl = L.polyline(a.pts, { color:'#2f6bff', weight:5 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
+  const m = sheetLeaflet('dmMap'), pl = L.polyline(a.pts, { color:'#ff4b3e', weight:5 }).addTo(m); setTimeout(() => m.fitBounds(pl.getBounds(), { padding:[20,20] }), 100);
   $('dmGhost').onclick = () => { if (state !== 'idle') return toast('Finish your current activity first');
     let c = 0; const P = a.pts.map((p, i) => { if (i) c += hav({lat:a.pts[i-1][0],lng:a.pts[i-1][1]}, {lat:p[0],lng:p[1]}); return [p[0], p[1], 0, c, null]; });
     P.forEach(p => p[2] = p[3]/c*a.time); closeModal('sheetModal'); showView('runView'); setGhost({ dist:c, pts:P }); toast(`👻 Racing ${a.who.name}'s pace — get to their route and hit START`); };
@@ -617,4 +617,106 @@ function extraBoot(){
   $('sHr').onclick = connectHr; $('sExport').onclick = exportBackup; $('sImport').onclick = importBackup;
   if (!navigator.bluetooth) $('sHrNote').textContent = 'Heart-rate straps work in Chrome on Android. iPhone browsers don’t support Bluetooth.';
   setInterval(() => { if (hrDev) { const c = document.querySelector('[data-x=hr]'); if (c) c.textContent = `❤️ ${liveHr() || '…'}`; } }, 2000);
+}
+
+
+// =====================================================================
+// UI v4 — track-themed layouts (these definitions replace the ones above)
+// =====================================================================
+function stadium(w, h, i){ const r = (h - 2*i)/2, a = i + r, b = w - i - r;
+  return `M${a},${i} H${b} A${r},${r} 0 0 1 ${b},${h - i} H${a} A${r},${r} 0 0 1 ${a},${i} Z`; }
+function trackSvg(w, h, pct, lanes = [10, 21, 32]){
+  const lap = stadium(w, h, 16);
+  return `<svg class="lanes" viewBox="0 0 ${w} ${h}" aria-hidden="true">${lanes.map(i => `<path d="${stadium(w, h, i)}"/>`).join('')}
+    <path class="lap-bg" d="${lap}"/><path class="lap" d="${lap}" pathLength="100" stroke-dasharray="100" stroke-dashoffset="${(100 - Math.max(0, Math.min(100, pct))).toFixed(1)}"/></svg>`;
+}
+const weekGoal = () => settings.weekGoal || 20;
+function postCard(a){
+  const mine = !a.demo, who = mine ? { name:profile().name, av:profile().av } : a.who, sp = a.sport || 'run', km = a.dist/1000, s = social();
+  const cm = (s.comments[a.id] || []).length + (a.commentsBase || 0), given = !!s.kudos[a.id], kc = mine ? (a.kudos || []).length : a.kudosBase + (given ? 1 : 0);
+  const hasMap = a.pts && a.pts.filter(p => p && p[0] != null).length > 1;
+  const stat = (l, v) => `<div><small>${l}</small>${v}</div>`;
+  const stats = sp === 'strength' ? stat('Time', fmtTime(a.time)) + stat('Calories', (a.kcal || kcalFor(0, a.time, sp)) + ' kcal')
+    : (hasMap ? '' : stat('Distance', km.toFixed(2) + ' km')) + stat(SPORTS[sp].speed ? 'Speed' : 'Pace', fmtRate(a.time/km, sp) + `<small style="display:inline;margin-left:3px">${rateUnit(sp)}</small>`) + stat('Time', fmtTime(a.time)) + (a.elev ? stat('Climb', a.elev + ' m') : '');
+  return `<article class="post" data-id="${esc(a.id)}">
+    ${hasMap ? `<div class="pmap">${svgRoute(a.pts, 360, 170, '#ff4b3e')}<div class="pdist">${km.toFixed(2)}<small>km</small></div><span class="psport">${SPORTS[sp].icon} ${SPORTS[sp].name}</span></div>` : ''}
+    <div class="pb"><div class="ph"><div class="av">${who.av}</div><div><b>${esc(who.name)}</b>${a.demo ? ' <span class="demo">Demo</span>' : ''}<small>${relTime(a.start)}</small></div></div>
+    <h4>${esc(a.title || autoTitle(a.start, sp))}</h4><div class="pstats">${stats}</div>
+    <div class="pact"><button class="kud ${given || (mine && kc) ? 'on' : ''}" data-k="${esc(a.id)}">👏 ${kc}</button><button data-c="${esc(a.id)}">💬 ${cm}</button>${mine ? `<button data-sh="${esc(a.id)}">Share</button>` : ''}</div></div></article>`;
+}
+function renderFeed(){
+  const fol = following(), mine = getRuns().map(r => ({ ...r, title:r.title || autoTitle(r.start, r.sport) })), demo = demoActivities().filter(a => fol.includes(a.who.id));
+  const all = [...mine, ...demo].sort((a, b) => b.start - a.start).slice(0, 40);
+  const wk = mondayOf(new Date()), wruns = mine.filter(r => r.start >= +wk), wkm = wruns.reduce((a, r) => a + r.dist, 0)/1000, goal = weekGoal();
+  const ranDays = new Set(wruns.map(r => (new Date(r.start).getDay() + 6) % 7)), todayIdx = (new Date().getDay() + 6) % 7;
+  const W = Math.min(window.innerWidth - 24, 520), todayKey = dayKey(new Date());
+  const live = new Set(demo.filter(a => dayKey(a.start) === todayKey).map(a => a.who.id));
+  const friends = DEMO.filter(d => fol.includes(d.id)).sort((a, b) => live.has(b.id) - live.has(a.id));
+  $('feedBody').innerHTML = `
+    <div class="track hero" id="weekHero" style="height:200px">${trackSvg(W, 200, wkm/goal*100)}
+      <div class="infield"><span class="hk">This week</span><div class="big">${wkm.toFixed(1)}<small>of ${goal} km</small></div>
+        <div class="days">${'MTWTFSS'.split('').map((d, i) => `<i class="${ranDays.has(i) ? 'on' : ''} ${i === todayIdx ? 'today' : ''}">${d}</i>`).join('')}</div></div></div>
+    <div class="strip-row"><button class="fr add" id="fdFind"><div class="av">＋</div>Find</button>
+      ${friends.map(d => `<button class="fr ${live.has(d.id) ? 'live' : ''}" data-fr="${d.id}"><div class="av">${d.av}</div>${esc(d.name.split(' ')[0])}</button>`).join('')}</div>
+    <div class="note">Friends, kudos and comments from others are demo athletes in this prototype. Real friends need accounts and a server.</div>
+    ${all.map(postCard).join('') || '<div class="empty">Your feed is empty. Record an activity to get it going.</div>'}`;
+  const byId = Object.fromEntries(all.map(a => [a.id, a]));
+  $('fdFind').onclick = findFriends;
+  $('weekHero').onclick = () => { openSheet(sheetHead('Weekly goal') + `<p class="sub">How many kilometers do you want to cover each week?</p><input id="wgIn" type="number" inputmode="numeric" value="${goal}" min="1" max="300"><div class="row-btns" style="margin-top:12px"><button class="main" id="wgOk">Set goal</button></div>`);
+    $('wgOk').onclick = () => { const v = parseInt($('wgIn').value); if (!(v > 0)) return toast('Enter a number of kilometers'); settings.weekGoal = v; store.set('settings', settings); closeModal('sheetModal'); renderFeed(); }; };
+  $('feedBody').querySelectorAll('[data-fr]').forEach(b => b.onclick = () => { const a = demo.filter(x => x.who.id === b.dataset.fr).sort((x, y) => y.start - x.start)[0]; if (a) openDemo(a); else toast('No recent activity'); });
+  $('feedBody').querySelectorAll('[data-k]').forEach(b => b.onclick = e => { e.stopPropagation(); const a = byId[b.dataset.k]; if (!a.demo) return toast('Kudos are for other people’s activities');
+    const s = social(); if (s.kudos[a.id]) delete s.kudos[a.id]; else { s.kudos[a.id] = 1; buzz(30); } saveSocial(s); renderFeed(); });
+  $('feedBody').querySelectorAll('[data-c]').forEach(b => b.onclick = e => { e.stopPropagation(); openComments(byId[b.dataset.c]); });
+  $('feedBody').querySelectorAll('[data-sh]').forEach(b => b.onclick = e => { e.stopPropagation(); shareCard(normRun(getRuns().find(r => r.id == b.dataset.sh))); });
+  $('feedBody').querySelectorAll('.post').forEach(c => c.onclick = () => { const a = byId[c.dataset.id]; if (!a.demo) openDetail(getRuns().find(r => r.id == a.id)); else openDemo(a); });
+}
+function renderRoutes(){
+  const routes = getRoutes(), segs = getSegs();
+  $('routesBody').innerHTML = `<div class="plan-hero"><h2>Where to next?</h2><p>Draw a route on the map, or let Pace make a loop from where you are.</p>
+      <div class="chips"><button class="chip solid" id="rtNew">Draw a route</button>${[3,5,10].map(k => `<button class="chip" data-quick="${k}">${k} km loop</button>`).join('')}<button class="chip" id="rtImport">Import GPX</button></div></div>
+    <h3 class="sec-h">Saved routes</h3>
+    ${routes.length ? `<div class="carousel">${routes.map((r, i) => `<div class="rcard"><div class="pmap">${svgRoute(r.line, 250, 130, '#7fb3ff')}<div class="pdist">${(r.len/1000).toFixed(1)}<small>km</small></div></div>
+      <div class="rb"><b>${esc(r.name)}</b><div class="row-btns"><button class="main" data-go="${i}">Follow</button><button class="main sec" data-gpx="${i}">GPX</button><button class="main sec" data-del="${i}">Delete</button></div></div></div>`).join('')}</div>`
+      : '<div class="empty" style="margin:6px 0 10px">No saved routes yet. Draw one above or make a quick loop.</div>'}
+    <h3 class="sec-h">Segments</h3>
+    ${segs.length ? segs.map((s, i) => { const b = myBestEffort(s.id), rk = segBoard(s).findIndex(r => r.me) + 1;
+      return `<div class="seg-row" data-seg="${i}"><div class="rk ${rk === 1 ? 'top' : ''}">${rk ? (rk === 1 ? '👑' : '#' + rk) : '–'}</div><div><b>${esc(s.name)}</b><small>${(s.len/1000).toFixed(2)} km${b ? ` · your best ${fmtTime(b)}` : ' · not run yet'}</small></div><span class="sub">›</span></div>`; }).join('')
+      : '<div class="empty" style="margin:6px 0">Open any activity in You and tap ⭐ Segment to start timing a stretch you love.</div>'}`;
+  $('rtNew').onclick = () => routeBuilder();
+  $('routesBody').querySelectorAll('[data-quick]').forEach(b => b.onclick = () => { routeBuilder(); setTimeout(() => { const g = $('sheetBody').querySelector(`[data-gen="${b.dataset.quick}"]`); if (g) g.click(); }, 250); });
+  $('rtImport').onclick = () => pickFile('.gpx,application/gpx+xml', (txt, name) => {
+    const doc = new DOMParser().parseFromString(txt, 'application/xml'), pts = [...doc.querySelectorAll('trkpt,rtept,wpt')].map(n => [+n.getAttribute('lat'), +n.getAttribute('lon')]).filter(p => isFinite(p[0]));
+    if (pts.length < 2) return toast('No track found in that file');
+    const step = Math.max(1, Math.ceil(pts.length/1500)), line = pts.filter((p, i) => i % step === 0 || i === pts.length-1);
+    store.set('routes', [{ id:'rt' + Date.now(), name:(doc.querySelector('name') || {}).textContent || name.replace(/\.gpx$/i, ''), line, len:Math.round(lineLen(line)) }, ...getRoutes()]); renderRoutes(); toast('Route imported');
+  });
+  $('routesBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (state !== 'idle') return toast('Finish your current activity first'); setFollow(routes[+b.dataset.go]); showView('runView'); toast('Route loaded. Tap Start when you’re ready'); });
+  $('routesBody').querySelectorAll('[data-gpx]').forEach(b => b.onclick = () => { const r = routes[+b.dataset.gpx]; shareOrDownload(r.name.replace(/[^\w-]+/g, '_') + '.gpx', gpxFrom(r.name, r.line.map(p => [p[0], p[1]]), null), 'application/gpx+xml'); });
+  $('routesBody').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { if (!b.dataset.sure){ b.dataset.sure = 1; b.textContent = 'Sure?'; return; } store.set('routes', routes.filter((_, i) => i !== +b.dataset.del)); renderRoutes(); });
+  $('routesBody').querySelectorAll('[data-seg]').forEach(c => c.onclick = () => openSegment(segs[+c.dataset.seg]));
+}
+function renderClubs(){
+  const j = joinedCh(), rs = monthRuns(), cs = clubState(), mn = new Date().toLocaleDateString('en', { month:'long' });
+  $('clubsBody').innerHTML = `<h3 class="sec-h" style="margin-top:6px">${mn} challenges</h3>
+    <div class="carousel">${challenges().map(c => { const k = c.id + ':' + ym(), v = c.f(rs), pct = Math.min(100, v/c.goal*100), st = j[k], n = 800 + Math.floor(seeded(k)()*9000);
+      return `<div class="chc"><div class="track">${trackSvg(172, 96, st ? pct : 0, [8, 16])}<div class="infield">${c.icon}</div></div>
+        <b>${c.name}</b><small>${c.desc}. ${n.toLocaleString()} joined.</small>
+        ${st ? `<div class="pct">${pct >= 100 ? 'Completed ✅' : Math.floor(pct) + '% · ' + c.unit(v)}</div>` : `<button class="main" data-j="${k}">Join</button>`}</div>`; }).join('')}</div>
+    <h3 class="sec-h">Clubs</h3>
+    <div class="club-grid">${allClubs().map(c => { const jn = cs.joined.includes(c.id);
+      return `<button class="ctile ${jn ? 'joined' : ''}" data-club="${c.id}"><div class="crest">${c.icon}</div><b>${esc(c.name)}</b><small>${(c.base + (jn ? 1 : 0)).toLocaleString()} members${jn ? ' · joined' : ''}</small></button>`; }).join('')}
+      <button class="ctile new" id="clNew"><div style="font-size:28px">＋</div><small>Create a club</small></button></div>`;
+  $('clubsBody').querySelectorAll('[data-j]').forEach(b => b.onclick = () => { const j2 = joinedCh(); j2[b.dataset.j] = 1; store.set('challenges', j2); challengeCheck(); renderClubs(); toast('Challenge joined'); });
+  $('clubsBody').querySelectorAll('[data-club]').forEach(c => c.onclick = () => openClub(allClubs().find(x => x.id === c.dataset.club)));
+  $('clNew').onclick = () => { openSheet(sheetHead('Create a club') + `<label class="f">Name</label><input id="cnName" maxlength="40" placeholder="e.g. Campus Runners"><label class="f">Crest emoji</label><input id="cnIcon" maxlength="2" value="🏃"><label class="f">What's it about?</label><input id="cnDesc" maxlength="80" placeholder="Tuesday evening easy runs"><div class="row-btns" style="margin-top:12px"><button class="main" id="cnOk">Create club</button></div>`);
+    $('cnOk').onclick = () => { const n = $('cnName').value.trim(); if (!n) return toast('Give the club a name'); const s = clubState(), id = 'c' + Date.now();
+      s.custom.push({ id, name:n, icon:$('cnIcon').value || '🏃', desc:$('cnDesc').value, members:DEMO.slice(0, 3).map(d => d.id), base:3 }); s.joined.push(id); store.set('clubs', s); closeModal('sheetModal'); renderClubs(); toast('Club created'); }; };
+}
+function renderYou(){
+  const p = profile(), runs = getRuns(), km = runs.reduce((a, r) => a + r.dist, 0)/1000, st = streaks(runs);
+  $('youHead').innerHTML = `<div class="you-hero"><div class="av">${p.av}</div><div style="flex:1"><b>${esc(p.name)}</b><small style="color:var(--mut)">Following ${following().length}</small></div><button class="chip" id="youEdit">Edit profile</button></div>
+    <div class="you-nums"><div><b>${runs.length}</b><small>activities</small></div><div><b>${km.toFixed(0)}</b><small>km total</small></div><div><b>${st.cur}</b><small>day streak</small></div></div>`;
+  $('youEdit').onclick = editProfile;
+  showPanel(youPanel);
 }
